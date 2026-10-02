@@ -17,3 +17,4 @@ html,body{height:100%;margin:0;background:#fff;color:var(--ink);font-family:-app
 /* md-white.css は単体ページ用に body へ幅・余白を掛けるので、アプリでは無効化する */
 html,body{max-width:none!important;width:auto!important;margin:0!important;padding:0!important;overflow:hidden}
 #doc{max-width:960px}
+#doc img{max-width:100%;height:auto}
