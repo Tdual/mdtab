@@ -2,13 +2,11 @@
 """mdtab: local Markdown viewer. Listens on 127.0.0.1:7331 and serves only files under $HOME.
 Dependencies: Python stdlib, pandoc (preferred) or the `markdown` module (fallback)."""
 from __future__ import annotations
-import html, json, mimetypes, os, re, subprocess, sys, urllib.parse
+import html, json, mimetypes, os, re, subprocess, urllib.parse
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
-import markdown
 
-ROOT = Path(__file__).resolve().parent
-STATIC = ROOT / "static"
+STATIC = Path(__file__).resolve().parent / "static"
 HOME = Path.home().resolve()
 PORT = int(os.environ.get("MD_VIEWER_PORT", "7331"))
 MD_EXT = {".md", ".markdown", ".mdown"}
@@ -52,6 +50,11 @@ def render(md_text: str) -> str:
                            input=md_text, capture_output=True, text=True, timeout=20)
         if r.returncode == 0:
             return r.stdout
+    try:
+        import markdown  # optional: pip install mdtab[markdown]
+    except ImportError:
+        return ("<p><b>No renderer available.</b> Install pandoc (<code>brew install pandoc</code>) "
+                "or <code>pip install mdtab[markdown]</code>.</p><pre>" + html.escape(md_text) + "</pre>")
     return markdown.markdown(md_text, extensions=["tables", "fenced_code", "toc", "sane_lists", "attr_list"],
                              extension_configs={"toc": {"permalink": False}})
 
@@ -91,7 +94,8 @@ class H(SimpleHTTPRequestHandler):
                 if c.name in SKIP_DIRS or c.name.startswith("."): continue
                 items.append({"name": c.name, "path": str(c), "dir": c.is_dir(), "md": c.suffix.lower() in MD_EXT})
             parent = str(d.parent) if d != HOME and HOME in d.parents else None
-            return self._json({"dir": str(d), "parent": parent, "items": items})
+            display = "~" + str(d)[len(str(HOME)):] if d == HOME or HOME in d.parents else str(d)
+            return self._json({"dir": str(d), "display": display, "parent": parent, "items": items})
         if u.path == "/api/file":
             f = safe(p)
             if not f or not f.is_file(): return self._json({"error": "bad file"}, 400)
@@ -112,5 +116,10 @@ class H(SimpleHTTPRequestHandler):
             return self._json({"ok": bool(f)})
         return self._json({"error": "not found"}, 404)
 
+def serve(port: int = PORT) -> None:
+    """Run the viewer in the foreground (launchd calls this via `python -m mdtab serve`)."""
+    ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
+
+
 if __name__ == "__main__":
-    ThreadingHTTPServer(("127.0.0.1", PORT), H).serve_forever()
+    serve()

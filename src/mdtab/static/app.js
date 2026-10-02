@@ -6,7 +6,7 @@ const api=(u,p)=>fetch(`${u}?path=${enc(p)}`).then(r=>r.json());
 
 async function loadTree(dir, ul, isRoot){
   const t=await api('/api/tree',dir); if(t.error) return;
-  if(isRoot){root=t; $('#crumb').innerHTML=crumb(t.dir); $('#up').disabled=!t.parent;}
+  if(isRoot){root=t; $('#crumb').innerHTML=crumb(t.display||t.dir); $('#up').disabled=!t.parent;}
   ul.innerHTML='';
   for(const it of t.items){
     const li=document.createElement('li'); li.className=it.dir?'dir':(it.md?'md':'other');
@@ -21,7 +21,7 @@ async function loadTree(dir, ul, isRoot){
   }
   mark();
 }
-function crumb(d){ const home=root?.dir ? null:null; const parts=d.split('/').filter(Boolean);
+function crumb(d){ const parts=d.split('/').filter(Boolean);
   return parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)).join(' / '); }
 function mark(){ document.querySelectorAll('#tree div[data-path]').forEach(e=>e.classList.toggle('sel',e.dataset.path===cur.file)); }
 async function openFile(p, push=true){

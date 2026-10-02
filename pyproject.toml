@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mdtab"
+version = "0.1.0"
+description = "Local Markdown viewer with a folder sidebar, opened from Finder into a browser tab"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [{ name = "Tdual" }]
+keywords = ["markdown", "viewer", "macos", "browser"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: MacOS",
+  "Topic :: Text Processing :: Markup :: Markdown",
+]
+dependencies = []
+
+[project.optional-dependencies]
+markdown = ["markdown>=3.4"]
+
+[project.scripts]
+mdtab = "mdtab.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Tdual/mdtab"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mdtab"]
