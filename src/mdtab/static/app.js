@@ -25,7 +25,7 @@ function crumb(d){ const parts=d.split('/').filter(Boolean);
   return parts.map((p,i)=>i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)).join(' / '); }
 function mark(){ document.querySelectorAll('#tree div[data-path]').forEach(e=>e.classList.toggle('sel',e.dataset.path===cur.file)); }
 async function openFile(p, push=true){
-  const f=await api('/api/file',p); if(f.error){ $('#doc').innerHTML=`<p class="hint">開けません: ${esc(p)}</p>`; return; }
+  const f=await api('/api/file',p); if(f.error){ $('#doc').innerHTML=`<p class="hint">Cannot open: ${esc(p)}</p>`; return; }
   cur={file:f.path,dir:f.dir,mtime:f.mtime}; document.title=f.name;
   $('#doc').innerHTML=f.html; $('#main').scrollTop=0; mark();
   if(push) history.replaceState(null,'',`/view?path=${enc(f.path)}`);
