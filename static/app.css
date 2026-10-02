@@ -1,0 +1,19 @@
+:root{--bar:#f6f7f9;--line:#e3e6ea;--sel:#e8f0fe;--ink:#222;--dim:#8a8f98;--accent:#2b5fd9}
+html,body{height:100%;margin:0;background:#fff;color:var(--ink);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+#bar{display:flex;align-items:center;gap:8px;height:40px;padding:0 10px;background:var(--bar);border-bottom:1px solid var(--line);font-size:13px}
+#bar .sp{flex:1}#bar button{font:inherit;padding:3px 9px;border:1px solid var(--line);background:#fff;border-radius:5px;cursor:pointer}
+#bar button:hover{border-color:var(--accent)}#crumb{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#crumb b{color:var(--ink)}
+#wrap{display:flex;height:calc(100% - 41px)}
+#side{width:280px;min-width:160px;overflow:auto;background:var(--bar);border-right:1px solid var(--line);font-size:13px}
+#gutter{width:4px;cursor:col-resize}#gutter:hover{background:var(--line)}
+#main{flex:1;overflow:auto}#doc{max-width:900px;margin:0 auto;padding:28px 40px 80px}
+#tree,#tree ul{list-style:none;margin:0;padding:0}#tree ul{padding-left:14px}
+#tree li>div{display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tree li>div:hover{background:#eef1f5}#tree li>div.sel{background:var(--sel);color:var(--accent);font-weight:600}
+#tree .ic{width:1.1em;display:inline-block;text-align:center;color:var(--dim);flex:none}
+#tree .other{color:var(--dim)}#tree .dir>div{font-weight:500}
+.hint{color:var(--dim)}#doc .toc{display:none}
+/* md-white.css は単体ページ用に body へ幅・余白を掛けるので、アプリでは無効化する */
+html,body{max-width:none!important;width:auto!important;margin:0!important;padding:0!important;overflow:hidden}
+#doc{max-width:960px}
