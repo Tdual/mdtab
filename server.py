@@ -39,8 +39,10 @@ def rewrite_links(body: str, base_dir: Path) -> str:
             return f'href="/view?path={urllib.parse.quote(str(target))}"'
         return f'{attr}="/api/raw?path={urllib.parse.quote(str(target))}"'
     body = re.sub(r'\b(src|href)="([^"]+)"', fix, body)
-    # Open links in a new tab (in-page anchors excluded)
-    return re.sub(r'<a\s+(?![^>]*\btarget=)(?=[^>]*href="(?!#))', '<a target="_blank" rel="noopener" ', body)
+    # External URLs and attachments open in a new tab; local .md links (/view) and
+    # in-page anchors navigate within the current tab.
+    return re.sub(r'<a\s+(?![^>]*\btarget=)(?=[^>]*href="(?:https?:|mailto:|/api/raw))',
+                  '<a target="_blank" rel="noopener" ', body)
 
 def render(md_text: str) -> str:
     """Render with pandoc (GFM) when available. python-markdown requires 4-space indents for nested
